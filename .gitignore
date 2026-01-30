@@ -32,3 +32,9 @@ dist/
 /deploy/android_demo/app/cache/
 test_tipc/web/models/
 test_tipc/web/node_modules/
+
+# Custom additions - large model files
+*.onnx
+*.pdparams
+pretrain_models/
+tensorboard_logs/
