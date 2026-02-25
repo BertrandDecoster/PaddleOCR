@@ -164,6 +164,12 @@ Examples:
         help="Path to checkpoint to resume from",
     )
     train_group.add_argument(
+        "--max_samples",
+        type=int,
+        default=None,
+        help="Limit train/val samples (for quick overfitting tests)",
+    )
+    train_group.add_argument(
         "--eval_only",
         action="store_true",
         help="Only run evaluation, no training",
@@ -404,6 +410,7 @@ def main():
             train_csv=args.train_csv,
             val_csv=args.val_csv,
             output_dir=str(data_dir),
+            max_samples=args.max_samples,
         )
         train_samples = stats["final_train_count"]
         val_samples = stats["final_val_count"]
@@ -428,6 +435,7 @@ def main():
             ground_truth_csv=args.ground_truth_csv,
             output_dir=str(data_dir),
             train_ratio=args.train_ratio,
+            max_samples=args.max_samples,
         )
         train_samples = stats["train_samples"]
         val_samples = stats["val_samples"]

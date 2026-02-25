@@ -1,0 +1,63 @@
+{
+  "models": {
+    "default": "./output/default_server_rec/onnx/model.onnx",
+    "finetuned": "./output/server_rec_full/onnx_finetuned/model.onnx"
+  },
+  "splits": {
+    "train": "../smartcity-cvfm-computer-vision/license_plate/datasets/ground_truth/train_big_ground_truth.csv",
+    "val": "../smartcity-cvfm-computer-vision/license_plate/datasets/ground_truth/val_big_ground_truth.csv"
+  },
+  "images_dir": "../smartcity-cvfm-computer-vision/license_plate/datasets/pictures/originals/dataset03",
+  "max_samples": null,
+  "metrics": {
+    "train": {
+      "default": {
+        "count": 8488,
+        "raw_accuracy": 0.257186616399623,
+        "norm_accuracy": 0.4518143261074458,
+        "raw_matches": 2183,
+        "norm_matches": 3835,
+        "raw_ned": 0.17480918750063426,
+        "norm_ned": 0.1263166580644196,
+        "mean_confidence": 0.7893049951737552,
+        "min_confidence": 0.0
+      },
+      "finetuned": {
+        "count": 8488,
+        "raw_accuracy": 0.9994109330819981,
+        "norm_accuracy": 0.9995287464655985,
+        "raw_matches": 8483,
+        "norm_matches": 8484,
+        "raw_ned": 6.209003322575423e-05,
+        "norm_ned": 6.311431264305911e-05,
+        "mean_confidence": 0.991567795185072,
+        "min_confidence": 0.8917102813720703
+      }
+    },
+    "val": {
+      "default": {
+        "count": 2123,
+        "raw_accuracy": 0.2647197362223269,
+        "norm_accuracy": 0.45171926519076777,
+        "raw_matches": 562,
+        "norm_matches": 959,
+        "raw_ned": 0.1727425319747505,
+        "norm_ned": 0.1267576512041891,
+        "mean_confidence": 0.7940333064047166,
+        "min_confidence": 0.34545668959617615
+      },
+      "finetuned": {
+        "count": 2123,
+        "raw_accuracy": 0.8294865756005653,
+        "norm_accuracy": 0.9891662741403674,
+        "raw_matches": 1761,
+        "norm_matches": 2100,
+        "raw_ned": 0.021592514880315165,
+        "norm_ned": 0.001657021734741942,
+        "mean_confidence": 0.9880113883564284,
+        "min_confidence": 0.8406227231025696
+      }
+    }
+  },
+  "total_time_seconds": 1321.6292321681976
+}

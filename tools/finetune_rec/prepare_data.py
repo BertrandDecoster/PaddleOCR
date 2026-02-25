@@ -60,16 +60,19 @@ def read_csv_ground_truth(csv_path):
     data = []
     with open(csv_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
+        # Normalize header names to lowercase to handle variants like 'FIlename'
+        reader.fieldnames = [name.lower() for name in reader.fieldnames]
         for row in reader:
-            filename = row.get("Filename") or row.get("filename")
-            label = row.get("Label") or row.get("label")
+            filename = row.get("filename")
+            label = row.get("label")
             if filename and label:
                 data.append((filename, label))
     return data
 
 
 def prepare_data(
-    images_dir, ground_truth_csv, output_dir, train_ratio=0.8, copy_images=False, seed=42
+    images_dir, ground_truth_csv, output_dir, train_ratio=0.8, copy_images=False, seed=42,
+    max_samples=None,
 ):
     """
     Prepare data for PaddleOCR recognition training.
@@ -81,6 +84,7 @@ def prepare_data(
         train_ratio: Ratio of data for training (rest for validation)
         copy_images: If True, copy images; otherwise create symlinks
         seed: Random seed for reproducible splits
+        max_samples: If set, limit each split to this many samples
 
     Returns:
         dict with paths to created files and statistics
@@ -131,6 +135,15 @@ def prepare_data(
         val_data = valid_data[1:] if len(valid_data) > 1 else []
     if len(val_data) == 0 and len(valid_data) > 1:
         val_data = [train_data.pop()]
+
+    # Truncate if max_samples is set
+    if max_samples is not None:
+        if max_samples < len(train_data):
+            print(f"  Truncating train from {len(train_data)} to {max_samples} samples")
+            train_data = train_data[:max_samples]
+        if max_samples < len(val_data):
+            print(f"  Truncating val from {len(val_data)} to {max_samples} samples")
+            val_data = val_data[:max_samples]
 
     # Copy/link images and create label files
     def process_split(split_data, label_file_path):

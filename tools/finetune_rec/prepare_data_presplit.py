@@ -65,9 +65,11 @@ def read_csv_ground_truth(csv_path):
     data = []
     with open(csv_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
+        # Normalize header names to lowercase to handle variants like 'FIlename'
+        reader.fieldnames = [name.lower() for name in reader.fieldnames]
         for row in reader:
-            filename = row.get("Filename") or row.get("filename")
-            label = row.get("Label") or row.get("label")
+            filename = row.get("filename")
+            label = row.get("label")
             if filename and label:
                 data.append((filename.strip(), label.strip()))
     return data
@@ -227,7 +229,8 @@ def write_cleaning_report(output_dir, stats):
 
 
 def prepare_data_presplit(
-    images_dir, train_csv, val_csv, output_dir, copy_images=False, strict=False
+    images_dir, train_csv, val_csv, output_dir, copy_images=False, strict=False,
+    max_samples=None,
 ):
     """
     Prepare pre-split data for PaddleOCR recognition training.
@@ -239,6 +242,7 @@ def prepare_data_presplit(
         output_dir: Output directory for prepared data
         copy_images: If True, copy images; otherwise create symlinks
         strict: If True, fail on missing images; otherwise warn
+        max_samples: If set, limit each split to this many samples
 
     Returns:
         dict with paths to created files and statistics
@@ -305,7 +309,16 @@ def prepare_data_presplit(
     if not val_data:
         raise ValueError("No valid validation samples after cleaning")
 
-    # Step 4: Create image links/copies and write label files
+    # Step 4: Truncate if max_samples is set
+    if max_samples is not None:
+        if max_samples < len(train_data):
+            print(f"\n  Truncating train from {len(train_data)} to {max_samples} samples")
+            train_data = train_data[:max_samples]
+        if max_samples < len(val_data):
+            print(f"  Truncating val from {len(val_data)} to {max_samples} samples")
+            val_data = val_data[:max_samples]
+
+    # Step 5: Create image links/copies and write label files
     print("\nCreating output files...")
 
     def process_split(split_data, label_file_path):
